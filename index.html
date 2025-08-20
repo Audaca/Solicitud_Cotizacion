@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Cotización - La Gráfika Digital</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .client-info {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .client-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .products-section {
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '📋';
+            font-size: 1.8rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+        }
+        
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+        
+        .btn-container {
+            padding: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .input-small {
+            width: 80px;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .input-medium {
+            width: 120px;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .select-small {
+            width: 150px;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .client-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header floating-animation">
+            <h1>LA GRÁFIKA DIGITAL</h1>
+            <p>Formato para Solicitar Cotización de Productos</p>
+        </div>
+        
+        <div class="client-info">
+            <div class="client-row">
+                <div class="form-group">
+                    <label for="clientName">Nombre del Cliente *</label>
+                    <input type="text" id="clientName" name="clientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientEmail">Email *</label>
+                    <input type="email" id="clientEmail" name="clientEmail" required>
+                </div>
+            </div>
+            <div class="client-row">
+                <div class="form-group">
+                    <label for="clientPhone">Teléfono</label>
+                    <input type="tel" id="clientPhone" name="clientPhone">
+                </div>
+                <div class="form-group">
+                    <label for="clientCompany">Empresa</label>
+                    <input type="text" id="clientCompany" name="clientCompany">
+                </div>
+            </div>
+        </div>
+        
+        <div class="products-section">
+            <h2 class="section-title">Productos Solicitados</h2>
+            
+            <div class="table-container">
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Ancho (cm)</th>
+                            <th>Alto (cm)</th>
+                            <th>Fondo (cm)</th>
+                            <th>Sustrato</th>
+                            <th>Tintas</th>
+                            <th>Plastificado/Laminado</th>
+                            <th>Acabados 1</th>
+                            <th>Acabados 2</th>
+                            <th>Observaciones</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Las filas se agregarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="btn-container">
+            <button class="btn btn-primary" onclick="addNewRow()">
+                ➕ Agregar Nueva Fila
+            </button>
+            <button class="btn btn-success" onclick="sendForm()">
+                📧 Enviar Cotización
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Datos para las listas desplegables
+        const productos = [
+            'AFICHES', 'ALMANAQUES HOJA SIMPLE', 'BANDERINES', 'BOLSAS BOUTIQUE', 
+            'CAJAS TAPA DURA', 'CAJAS VIPACK', 'CARPETAS CORPORATIVAS', 'CARTELERA',
+            'FLOOR GRAPHIC', 'HOJAS MEMEBRETE', 'MURAL', 'PORTA LAPICES', 'POSTERS',
+            'ROMPE TRÁFICO', 'SOBRE 20A BOND 23x12 CM', 'STICKERS', 'TARJETAS DE PRESENTACIÓN',
+            'VOLANTES (FLYERS)', 'AGENDA EMPRESARIAL', 'BROCHURES', 'CUADERNO EMPRESARIAL',
+            'FOLLETOS', 'REVISTAS', 'BOLSAS ECOLÓGICAS', 'BOLSAS KRAFT', 'BOLSAS PLÁSTICAS',
+            'CAJAS MICROCORRUGADO', 'CAJAS PLEGADIZAS', 'CALENDARIOS', 'PORTA CELULARES',
+            'PORTA TACOS', 'SOBRES', 'TACOS', 'PRODUCTOS PROMOCIONALES', 'SEÑALIZACIÓN'
+        ];
+        
+        const sustratos = [
+            'Bond 75 gr', 'Bond 90 gr', 'Bond color', 'Cartulina 150 gr', 'Kraft',
+            'Lino',  'Adhesivo', 'Maulle cal 14', 'Maulle cal 16', 'Maulle cal 18', 'Opalina 200 gr',
+            'Opalina 250 gr', 'Pergamino', 'Periodico Natural', 'Poliestileno para bolsas',
+            'Propalcote 115 gr', 'Propalcote 150 gr', 'Propalcote 200 gr', 'Propalcote 300 gr',
+            'Propalcote 90 gr', 'Reciclado', 'Tela ecológica para bolsas', 'Vinilo Laminado',
+            'Vinilo sin laminar', 'Vipack - Acetato'
+        ];
+        
+        const tintas = [
+            '1 tinta por 1 cara (Color directo)',
+            '1 tinta por las 2 caras (Color directo)',
+            '4 tintas por 1 cara (Policromía)',
+            '4 tintas por las 2 caras (Policromía)'
+        ];
+        
+        const plastificado = [
+            'Sin Plastificar',
+            'Plastif. Brillante por 1 cara',
+            'Plastif. Mate por 1 cara',
+            'Plastif. Brillante por 2 caras',
+            'Plastif. Mate por 2 caras',
+            'Laminado'
+        ];
+        
+        const acabados = [
+            'Sin acabado', 'Anillado', 'Cintas Doble Faz', 'Costura 2 ganchos',
+            'Costura Hilo', 'Despuntado', 'Encolado', 'Estampado', 'Fajillado',
+            'Grafado', 'Hot Melt', 'Medio corte', 'Numerado', 'Pegue Colbón',
+            'Pegue silicona', 'Perforado', 'Personalizado', 'Plegado',
+            'Tapa Dura', 'Ver Observaciones'
+        ];
+        
+        let rowCounter = 1;
+        
+        function createSelectOptions(options) {
+            return options.map(option => `<option value="${option}">${option}</option>`).join('');
+        }
+        
+        function addNewRow() {
+            const tbody = document.getElementById('productsTableBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${rowCounter}</td>
+                <td>
+                    <select class="select-small" name="producto_${rowCounter}">
+                        <option value="">Seleccionar...</option>
+                        ${createSelectOptions(productos)}
+                    </select>
+                </td>
+                <td><input type="number" class="input-small" name="cantidad_${rowCounter}" min="1"></td>
+                <td><input type="number" class="input-small" name="ancho_${rowCounter}" step="0.1"></td>
+                <td><input type="number" class="input-small" name="alto_${rowCounter}" step="0.1"></td>
+                <td><input type="number" class="input-small" name="fondo_${rowCounter}" step="0.1"></td>
+                <td>
+                    <select class="select-small" name="sustrato_${rowCounter}">
+                        <option value="">Seleccionar...</option>
+                        ${createSelectOptions(sustratos)}
+                    </select>
+                </td>
+                <td>
+                    <select class="select-small" name="tintas_${rowCounter}">
+                        <option value="">Seleccionar...</option>
+                        ${createSelectOptions(tintas)}
+                    </select>
+                </td>
+                <td>
+                    <select class="select-small" name="plastificado_${rowCounter}">
+                        <option value="">Seleccionar...</option>
+                        ${createSelectOptions(plastificado)}
+                    </select>
+                </td>
+                <td>
+                    <select class="select-small" name="acabados1_${rowCounter}">
+                        <option value="">Seleccionar...</option>
+                        ${createSelectOptions(acabados)}
+                    </select>
+                </td>
+                <td>
+                    <select class="select-small" name="acabados2_${rowCounter}">
+                        <option value="">Seleccionar...</option>
+                        ${createSelectOptions(acabados)}
+                    </select>
+                </td>
+                <td><input type="text" class="input-medium" name="observaciones_${rowCounter}" placeholder="Observaciones..."></td>
+                <td>
+                    <button class="delete-btn" onclick="deleteRow(this)">🗑️</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+            rowCounter++;
+        }
+        
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
+        
+        function sendForm() {
+            // Validar campos obligatorios
+            const clientName = document.getElementById('clientName').value;
+            const clientEmail = document.getElementById('clientEmail').value;
+            
+            if (!clientName || !clientEmail) {
+                alert('Por favor, complete el nombre y email del cliente.');
+                return;
+            }
+            
+            // Recopilar datos del formulario
+            const formData = {
+                cliente: {
+                    nombre: clientName,
+                    email: clientEmail,
+                    telefono: document.getElementById('clientPhone').value,
+                    empresa: document.getElementById('clientCompany').value
+                },
+                productos: []
+            };
+            
+            // Recopilar datos de productos
+            const rows = document.querySelectorAll('#productsTableBody tr');
+            rows.forEach((row, index) => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length > 0) {
+                    const producto = {
+                        item: cells[0].textContent,
+                        producto: cells[1].querySelector('select').value,
+                        cantidad: cells[2].querySelector('input').value,
+                        ancho: cells[3].querySelector('input').value,
+                        alto: cells[4].querySelector('input').value,
+                        fondo: cells[5].querySelector('input').value,
+                        sustrato: cells[6].querySelector('select').value,
+                        tintas: cells[7].querySelector('select').value,
+                        plastificado: cells[8].querySelector('select').value,
+                        acabados1: cells[9].querySelector('select').value,
+                        acabados2: cells[10].querySelector('select').value,
+                        observaciones: cells[11].querySelector('input').value
+                    };
+                    
+                    if (producto.producto && producto.cantidad) {
+                        formData.productos.push(producto);
+                    }
+                }
+            });
+            
+            if (formData.productos.length === 0) {
+                alert('Por favor, agregue al menos un producto a la cotización.');
+                return;
+            }
+            
+            // Generar contenido del email
+            let emailContent = `SOLICITUD DE COTIZACIÓN - LA GRÁFIKA DIGITAL%0D%0A%0D%0A`;
+            emailContent += `DATOS DEL CLIENTE:%0D%0A`;
+            emailContent += `Nombre: ${formData.cliente.nombre}%0D%0A`;
+            emailContent += `Email: ${formData.cliente.email}%0D%0A`;
+            emailContent += `Teléfono: ${formData.cliente.telefono}%0D%0A`;
+            emailContent += `Empresa: ${formData.cliente.empresa}%0D%0A%0D%0A`;
+            emailContent += `PRODUCTOS SOLICITADOS:%0D%0A%0D%0A`;
+            
+            formData.productos.forEach(producto => {
+                emailContent += `Item ${producto.item}:%0D%0A`;
+                emailContent += `- Producto: ${producto.producto}%0D%0A`;
+                emailContent += `- Cantidad: ${producto.cantidad}%0D%0A`;
+                emailContent += `- Dimensiones: ${producto.ancho}x${producto.alto}${producto.fondo ? 'x' + producto.fondo : ''} cm%0D%0A`;
+                emailContent += `- Sustrato: ${producto.sustrato}%0D%0A`;
+                emailContent += `- Tintas: ${producto.tintas}%0D%0A`;
+                emailContent += `- Plastificado: ${producto.plastificado}%0D%0A`;
+                emailContent += `- Acabados 1: ${producto.acabados1}%0D%0A`;
+                emailContent += `- Acabados 2: ${producto.acabados2}%0D%0A`;
+                emailContent += `- Observaciones: ${producto.observaciones}%0D%0A%0D%0A`;
+            });
+            
+            // **CAMBIAR ESTA LÍNEA POR TU EMAIL REAL**
+            const tuEmail = "lagrafikashop@gmail.com"; // ← CAMBIAR AQUÍ
+            
+            const subject = `Solicitud de Cotización - ${formData.cliente.nombre}`;
+            
+            // Intentar múltiples métodos de envío
+            const mailtoLink = `mailto:${tuEmail}?subject=${encodeURIComponent(subject)}&body=${emailContent}`;
+            
+            // Mostrar opciones al usuario de forma más clara
+            const userChoice = confirm(
+                `🎯 OPCIONES DE ENVÍO DE COTIZACIÓN:\n\n` +
+                `OPCIÓN 1 - ACEPTAR:\n` +
+                `📧 Intentar abrir su programa de correo\n` +
+                `(Outlook, Mail, Thunderbird, etc.)\n\n` +
+                `OPCIÓN 2 - CANCELAR:\n` +
+                `📋 Copiar información para Gmail/Hotmail web\n` +
+                `(Recomendado si usa correo en navegador)\n\n` +
+                `¿Desea intentar la OPCIÓN 1?`
+            );
+            
+            if (userChoice) {
+                // Intentar abrir cliente de correo
+                window.location.href = mailtoLink;
+                
+                // Dar tiempo y luego preguntar si funcionó
+                setTimeout(() => {
+                    const worked = confirm(
+                        '¿Se abrió correctamente su cliente de correo?\n\n' +
+                        '• ACEPTAR: Sí, se abrió correctamente\n' +
+                        '• CANCELAR: No se abrió, usar método alternativo'
+                    );
+                    
+                    if (!worked) {
+                        copyToClipboard(formData);
+                    }
+                }, 2000);
+            } else {
+                // Copiar al portapapeles y mostrar información
+                copyToClipboard(formData);
+            }
+        }
+        
+        function copyToClipboard(formData) {
+            let textToCopy = `SOLICITUD DE COTIZACIÓN - LA GRÁFIKA DIGITAL\n\n`;
+            textToCopy += `DATOS DEL CLIENTE:\n`;
+            textToCopy += `Nombre: ${formData.cliente.nombre}\n`;
+            textToCopy += `Email: ${formData.cliente.email}\n`;
+            textToCopy += `Teléfono: ${formData.cliente.telefono}\n`;
+            textToCopy += `Empresa: ${formData.cliente.empresa}\n\n`;
+            textToCopy += `PRODUCTOS SOLICITADOS:\n\n`;
+            
+            formData.productos.forEach(producto => {
+                textToCopy += `Item ${producto.item}:\n`;
+                textToCopy += `- Producto: ${producto.producto}\n`;
+                textToCopy += `- Cantidad: ${producto.cantidad}\n`;
+                textToCopy += `- Dimensiones: ${producto.ancho}x${producto.alto}${producto.fondo ? 'x' + producto.fondo : ''} cm\n`;
+                textToCopy += `- Sustrato: ${producto.sustrato}\n`;
+                textToCopy += `- Tintas: ${producto.tintas}\n`;
+                textToCopy += `- Plastificado: ${producto.plastificado}\n`;
+                textToCopy += `- Acabados 1: ${producto.acabados1}\n`;
+                textToCopy += `- Acabados 2: ${producto.acabados2}\n`;
+                textToCopy += `- Observaciones: ${producto.observaciones}\n\n`;
+            });
+            
+            // Intentar copiar al portapapeles
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert(
+                    `✅ INFORMACIÓN COPIADA AL PORTAPAPELES\n\n` +
+                    `Ahora puede:\n` +
+                    `1. Abrir su email (Gmail, Outlook, etc.)\n` +
+                    `2. Crear un nuevo mensaje\n` +
+                    `3. Pegar la información (Ctrl+V)\n` +
+                    `4. Enviar a: lagrafikashop@gmail.com`
+                );
+            }).catch(() => {
+                // Si no se puede copiar, mostrar en una ventana
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(`
+                    <html>
+                        <head><title>Solicitud de Cotización</title></head>
+                        <body style="font-family: Arial; padding: 20px; background: #f5f5f5;">
+                            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <h2 style="color: #2c3e50;">📋 Copie esta información y envíela por email</h2>
+                                <p><strong>Para:</strong> TU-EMAIL@gmail.com</p>
+                                <p><strong>Asunto:</strong> ${encodeURIComponent(`Solicitud de Cotización - ${formData.cliente.nombre}`)}</p>
+                                <hr>
+                                <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap;">${textToCopy}</pre>
+                                <button onclick="window.print()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px 0 0;">🖨️ Imprimir</button>
+                                <button onclick="navigator.clipboard.writeText(\`${textToCopy.replace(/`/g, '\\`')}\`)" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 0 0 0;">📋 Copiar Texto</button>
+                            </div>
+                        </body>
+                    </html>
+                `);
+            });
+        }
+        
+        // Agregar primera fila al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            addNewRow();
+        });
+    </script>
+</body>
+</html>
